@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AdTV</string>
+    <string name="enter_auth_token">Enter your access token here</string>
+    <string name="submit">SUBMIT</string>
+</resources>
