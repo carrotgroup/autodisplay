@@ -31,14 +31,16 @@
         <activity
             android:name=".splashscreen.SplashActivity"
             android:theme="@style/Theme.Leanback"
-                android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".homescreen.HomeActivity"></activity>
+        <activity
+            android:name=".homescreen.HomeActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
     </application>
 
 </manifest>

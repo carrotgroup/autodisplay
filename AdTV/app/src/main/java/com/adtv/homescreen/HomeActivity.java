@@ -8,19 +8,22 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.VideoView;
+import android.widget.ProgressBar;
 
 import com.adtv.R;
 import com.adtv.Utility.DataManager;
 import com.adtv.Utility.Utility;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends Activity {
 
     private ImageView mImageView;
-    private VideoView mVideoView;
+    private MyVideoView mVideoView;
+
+    private ProgressBar mVideoLoadProgressBar;
 
     private int mMixedUrlListIndex = 0;
 
@@ -36,11 +39,14 @@ public class HomeActivity extends Activity {
     private void initView() {
         mImageView = findViewById(R.id.imageView);
         mVideoView = findViewById(R.id.videoView);
+        mVideoLoadProgressBar = findViewById(R.id.video_load_progress_bar);
     }
 
     private void showImage(String url) {
+        Glide.with(this).load(url).priority(Priority.IMMEDIATE).dontAnimate().
+                into(mImageView);
+
         isShowImage(true);
-        Glide.with(this).load(url).into(mImageView);
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -68,10 +74,17 @@ public class HomeActivity extends Activity {
         Uri uri = Uri.parse(url);
 
         //Setting MediaController and URI, then starting the videoView
-        mVideoView.setMediaController(mediaController);
+//        mVideoView.setMediaController(mediaController);
         mVideoView.setVideoURI(uri);
         mVideoView.requestFocus();
         mVideoView.start();
+        mVideoLoadProgressBar.setVisibility(View.VISIBLE);
+        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mVideoLoadProgressBar.setVisibility(View.GONE);
+            }
+        });
 
         mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override

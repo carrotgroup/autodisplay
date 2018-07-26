@@ -3,6 +3,7 @@ package com.adtv.splashscreen;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.adtv.R;
 import com.adtv.Utility.DataManager;
+import com.adtv.Utility.PreferenceConstants;
 import com.adtv.Utility.Utility;
 import com.adtv.homescreen.HomeActivity;
 import com.adtv.splashscreen.model.GetSharedLinkApiResponse;
@@ -20,7 +22,7 @@ import java.util.List;
 
 public class SplashActivity extends Activity implements SplashScreenApiResponseListener, View.OnClickListener {
 
-    private String mAccessToken = "qPWe4rHzi4AAAAAAAAAAB-GU8ty1sQZtY1jsZNBp2OoW2c31HohRJUmRN6OTXymg";
+    private String mAccessToken = "";//"qPWe4rHzi4AAAAAAAAAAB-GU8ty1sQZtY1jsZNBp2OoW2c31HohRJUmRN6OTXymg";
 
     private ImageView mSplashScreenImageView;
     private EditText mAccessTokenEditText;
@@ -32,6 +34,11 @@ public class SplashActivity extends Activity implements SplashScreenApiResponseL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         initView();
+        if (PreferenceManager.getDefaultSharedPreferences(this).contains(PreferenceConstants.KEY_ACCESS_TOKEN)) {
+            mAccessTokenEditText.setVisibility(View.GONE);
+            mAccessTokenEditText.setText(PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceConstants.KEY_ACCESS_TOKEN, ""));
+            mAccessTokenButton.performClick();
+        }
     }
 
     private void fetchDropboxSharedLinks(String accessToken) {
@@ -63,6 +70,7 @@ public class SplashActivity extends Activity implements SplashScreenApiResponseL
             finish();
             fillUrlList(iGetSharedLinkApiResponse);
             openHomeScreen();
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PreferenceConstants.KEY_ACCESS_TOKEN, mAccessToken).apply();
         }
     }
 
@@ -95,15 +103,14 @@ public class SplashActivity extends Activity implements SplashScreenApiResponseL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.submit_access_token_button:
-                String accessToken = "";
                 if (!TextUtils.isEmpty(mAccessTokenEditText.getText().toString())) {
-                    accessToken = mAccessTokenEditText.getText().toString();
+                    mAccessToken = mAccessTokenEditText.getText().toString();
                 } else {
                     Utility.showToast("Please enter access token");
                     mAccessTokenEditText.requestFocus();
                     return;
                 }
-                fetchDropboxSharedLinks(accessToken);
+                fetchDropboxSharedLinks(mAccessToken);
                 break;
         }
     }
