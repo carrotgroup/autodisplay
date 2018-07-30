@@ -3,6 +3,7 @@ package com.adtv.splashscreen;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -37,7 +38,14 @@ public class SplashActivity extends Activity implements SplashScreenApiResponseL
         if (PreferenceManager.getDefaultSharedPreferences(this).contains(PreferenceConstants.KEY_ACCESS_TOKEN)) {
             mAccessTokenEditText.setVisibility(View.GONE);
             mAccessTokenEditText.setText(PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceConstants.KEY_ACCESS_TOKEN, ""));
-            mAccessTokenButton.performClick();
+            mAccessTokenButton.setVisibility(View.GONE);
+            mSplashScreenProgressBar.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mAccessTokenButton.performClick();
+                }
+            },25*1000);
         }
     }
 

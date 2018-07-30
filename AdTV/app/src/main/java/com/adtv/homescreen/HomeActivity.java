@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.MediaController;
-import android.widget.ProgressBar;
 
 import com.adtv.R;
 import com.adtv.Utility.DataManager;
@@ -23,7 +21,6 @@ public class HomeActivity extends Activity {
     private ImageView mImageView;
     private MyVideoView mVideoView;
 
-    private ProgressBar mVideoLoadProgressBar;
 
     private int mMixedUrlListIndex = 0;
 
@@ -39,7 +36,6 @@ public class HomeActivity extends Activity {
     private void initView() {
         mImageView = findViewById(R.id.imageView);
         mVideoView = findViewById(R.id.videoView);
-        mVideoLoadProgressBar = findViewById(R.id.video_load_progress_bar);
     }
 
     private void showImage(String url) {
@@ -67,8 +63,8 @@ public class HomeActivity extends Activity {
         isShowImage(false);
 
         //Creating MediaController
-        MediaController mediaController = new MediaController(this);
-        mediaController.setAnchorView(mVideoView);
+//        MediaController mediaController = new MediaController(this);
+//        mediaController.setAnchorView(mVideoView);
 
         //specify the location of media file
         Uri uri = Uri.parse(url);
@@ -78,14 +74,6 @@ public class HomeActivity extends Activity {
         mVideoView.setVideoURI(uri);
         mVideoView.requestFocus();
         mVideoView.start();
-        mVideoLoadProgressBar.setVisibility(View.VISIBLE);
-        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mVideoLoadProgressBar.setVisibility(View.GONE);
-            }
-        });
-
         mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -99,9 +87,9 @@ public class HomeActivity extends Activity {
         playContent();
     }
 
-    private void playContent() {
+    ArrayList<String> mixedUrlList = DataManager.getInstance().getUrlList();
 
-        ArrayList<String> mixedUrlList = DataManager.getInstance().getUrlList();
+    private void playContent() {
 
         if (mixedUrlList != null && mixedUrlList.size() > mMixedUrlListIndex) {
             String url = Utility.modifyDropboxUrl(mixedUrlList.get(mMixedUrlListIndex));
